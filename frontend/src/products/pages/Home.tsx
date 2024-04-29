@@ -1,16 +1,26 @@
-import { useEffect } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { useConsult } from "../../app/hooks/useConsult";
-import { ProductType } from "../models/types";
 import { Loading } from "../../app/components/Loading";
+import { Link } from "react-router-dom";
 
 export function Home() {
-  const { data, setData, consult, load, mssg, resetAll } = useConsult<
-    ProductType[]
-  >("https://dummyjson.com");
+  const [searchItem, setSearchItem] = useState("");
+  const { data, consult, load, mssg, resetAll } = useConsult<ApiResponse>(
+    "https://dummyjson.com"
+  );
 
   useEffect(() => {
     consult("/products/?limit=6", "GET");
   }, []);
+
+  function handleChangeSearch(e: ChangeEvent<HTMLInputElement>) {
+    setSearchItem(e.target.value);
+  }
+
+  function searchAction() {
+    resetAll();
+    consult(`/products/search?q=${searchItem}&limit=6`, "GET");
+  }
 
   return (
     <section className="w-[80%] mx-auto max-w-[800px]">
@@ -45,38 +55,45 @@ export function Home() {
           <input
             type="search"
             id="default-search"
+            value={searchItem}
+            onChange={handleChangeSearch}
             className="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500"
             placeholder="Search Mockups, Logos..."
-            required
           />
           <button
-            type="submit"
-            className="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2"
+            onClick={searchAction}
+            className={`text-white absolute end-2.5 bottom-2.5 bg-black ${
+              searchItem === "" && "opacity-50 pointer-events-none"
+            } focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2`}
           >
             Search
           </button>
         </div>
       </section>
 
-      <section className="grid justify-items-center gap-[20px] grid-cols-2 md:grid-cols-3">
-        {data?.products.map((product) => {
-          return (
-            <section key={product.id} className="space-y-[5px] relative">
-              <img
-                className="h-[150px] object-cover bg-gray-300 w-[150px] rounded-[8px]"
-                src={product.thumbnail}
-                alt={product.title}
-              />
-              <p className="text-md">{product.title}</p>
-              <p className="text-sm font-semibold">$ {product.price}</p>
-            </section>
-          );
-        })}
-        <img src="" alt="" />
-        <section>
-          <div className="w-[5px] h-[5px] "></div>
+      {data !== null && data?.products.length > 0 ? (
+        <section className="grid justify-items-center gap-[20px] grid-cols-2 md:grid-cols-3">
+          {data?.products.map((product) => {
+            return (
+              <Link to={`/product/${product.id}`} key={product.id} className="space-y-[5px] transition-all hover:opacity-75 relative">
+                <img
+                  className="h-[150px] object-cover bg-gray-300 w-[150px] rounded-[8px]"
+                  src={product.thumbnail}
+                  alt={product.title}
+                />
+                <p className="text-md">{product.title}</p>
+                <p className="text-sm font-semibold">$ {product.price}</p>
+              </Link>
+            );
+          })}
+          <img src="" alt="" />
+          <section>
+            <div className="w-[5px] h-[5px] "></div>
+          </section>
         </section>
-      </section>
+      ) : (
+        <h1 className="font-semibold text-center text-lg">product not found</h1>
+      )}
     </section>
   );
 }

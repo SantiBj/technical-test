@@ -5,6 +5,7 @@ import { Register } from "./authentication/pages/Register";
 import { UnauthenticatedUser } from "./permissions/UnathenticatedUser";
 import { AuthProvider } from "./authentication/context/AuthProvider";
 import { ProtectedRoutes } from "./permissions/ProtectedRoutes";
+import { Product } from "./products/pages/Product";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <Routes>
           <Route element={<ProtectedRoutes />}>
             <Route index element={<Home />} />
+            <Route path="/product/:productId" element={<Product/>} />
           </Route>
           <Route
             element={

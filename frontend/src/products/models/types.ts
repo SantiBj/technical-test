@@ -1,14 +1,14 @@
-export interface ProductType {
-    id: number;
-    title: string;
-    description: string;
-    price: number;
-    discountPercentage: number;
-    rating: number;
-    stock: number;
-    brand: string;
-    category: string;
-    thumbnail: string;
-    images: string[];
-  }
-  
+interface ProductType {
+  id: number;
+  title: string;
+  price: number;
+  description?: string;
+  thumbnail: string;
+}
+
+interface ApiResponse {
+  products: ProductType[];
+  total: number;
+  skip: number;
+  limit: number;
+}

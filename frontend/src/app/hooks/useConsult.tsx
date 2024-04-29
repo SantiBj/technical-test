@@ -44,7 +44,6 @@ export function useConsult<TypeResponse>(host: string) {
     consult,
     load,
     mssg,
-    resetAll,
-    setData
+    resetAll
   };
 }

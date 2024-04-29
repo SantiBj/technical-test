@@ -1,4 +1,5 @@
 import {
+  APIRequest,
   APIService,
   ExpressStandardConfiguration,
   ITRMAPIServiceGlobal,
@@ -13,13 +14,12 @@ const service = new APIService({
   express: new ExpressStandardConfiguration(),
 });
 
-ITRMAPIServiceGlobal.whitelist = ["http://localhost:3000","http://localhost:5173"]
-
 
 service.init();
 service.addRouter(authRouter);
 service.addRouter(productsRouter);
 service.enableDocumentation();
+
 service
   .run(() => {})
   .then((response) => {
@@ -28,4 +28,6 @@ service
   .catch((error) => {
     console.error("Error al iniciar el servidor:", error);
   });
+
+//ITRMAPIServiceGlobal.whitelist = ['http://localhost:5173']
 
